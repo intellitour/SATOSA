@@ -117,7 +117,10 @@ class ModuleRouter(object):
 
     def _find_registered_endpoint_for_module(self, module, context):
         for regex, spec in module["endpoints"]:
-            match = re.search(regex, context.path)
+            context_path = context.path
+            if "/" in self.base_url:
+                context_path = context_path.replace(self.base_url.split("/")[-1], "")
+            match = re.search(regex, context_path)
             if match is not None:
                 msg = "Found registered endpoint: module name:'{name}', endpoint: {endpoint}".format(
                     name=module["instance"].name, endpoint=context.path

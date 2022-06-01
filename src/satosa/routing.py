@@ -38,8 +38,9 @@ class ModuleRouter(object):
     and handles the internal routing between frontends and backends.
     """
 
-    def __init__(self, frontends, backends, micro_services):
+    def __init__(self, base_url, frontends, backends, micro_services):
         """
+        :type base_url: str
         :type frontends: dict[str, satosa.frontends.base.FrontendModule]
         :type backends: dict[str, satosa.backends.base.BackendModule]
         :type micro_services: Sequence[satosa.micro_services.base.MicroService]
@@ -51,6 +52,11 @@ class ModuleRouter(object):
         :param micro_services: All available micro services used by the proxy. Key as micro service name, value as
         module
         """
+
+        if not base_url:
+            raise ValueError("Base URL is mandatory")
+
+        self.base_url = base_url
 
         if not frontends or not backends:
             raise ValueError("Need at least one frontend and one backend")
@@ -68,6 +74,7 @@ class ModuleRouter(object):
         else:
             self.micro_services = {}
 
+        logger.debug("Using base URL: {}".format(base_url))
         logger.debug("Loaded backends with endpoints: {}".format(backends))
         logger.debug("Loaded frontends with endpoints: {}".format(frontends))
         logger.debug("Loaded micro services with endpoints: {}".format(micro_services))
@@ -157,6 +164,8 @@ class ModuleRouter(object):
         logger.debug(logline)
         path_split = context.path.split("/")
         backend = path_split[0]
+        if "/" in self.base_url:
+            backend = backend.replace(self.base_url.split("/")[-1], "")
 
         if backend in self.backends:
             context.target_backend = backend

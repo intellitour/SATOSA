@@ -64,7 +64,7 @@ class SATOSABase(object):
                                             self.config["BASE"]))
             self._link_micro_services(self.response_micro_services, self._auth_resp_finish)
 
-        self.module_router = ModuleRouter(frontends, backends,
+        self.module_router = ModuleRouter(self.config["BASE"], frontends, backends,
                                           self.request_micro_services + self.response_micro_services)
 
     def _link_micro_services(self, micro_services, finisher):

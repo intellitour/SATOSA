@@ -120,7 +120,7 @@ class ModuleRouter(object):
         for regex, spec in module["endpoints"]:
             context_path = context.path
             match = re.search(regex, context_path)
-            if match is None and "/" in self.base_url:
+            if match is None and "/" in self.base_url.replace("https://", "").replace("http://", ""):
                     logger.debug(f"Base URL has a context path: {self.base_url}")
                     context_path = context_path.replace(self.base_url.split("/")[-1], "")
                     context_path = context_path.replace("/", "", 1)
@@ -172,7 +172,7 @@ class ModuleRouter(object):
         logger.debug(logline)
         path_split = context.path.split("/")
         logger.debug(f"Found path_splits: {path_split}".format(path_split=path_split))
-        if "/" in self.base_url:
+        if "/" in self.base_url.replace("https://", "").replace("http://", ""):
             base_url_context = self.base_url.split("/")[-1]
             path_split.remove(base_url_context)
             logger.debug("Found context path: {ctx}, removing. Resulting path split: {path_split}".format(ctx=base_url_context, path_split=path_split))

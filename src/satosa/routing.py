@@ -119,11 +119,13 @@ class ModuleRouter(object):
         logger.debug("Using endpoints: {}".format(module["endpoints"]))
         for regex, spec in module["endpoints"]:
             context_path = context.path
-            if "/" in self.base_url:
-                logger.debug(f"Base URL has a context path: {context_path}")
-                context_path = context_path.replace(self.base_url.split("/")[-1], "")
-                logger.debug(f"Removed: {context_path}")
             match = re.search(regex, context_path)
+            if match is None and "/" in self.base_url:
+                    logger.debug(f"Base URL has a context path: {self.base_url}")
+                    context_path = context_path.replace(self.base_url.split("/")[-1], "")
+                    context_path = context_path.replace("/", "", 1)
+                    logger.debug(f"Removed: {context_path}")
+                    match = re.search(regex, context_path)
             if match is not None:
                 msg = "Found registered endpoint: module name:'{name}', endpoint: {endpoint}".format(
                     name=module["instance"].name, endpoint=context.path

@@ -164,8 +164,9 @@ class ModuleRouter(object):
         logger.debug(logline)
         path_split = context.path.split("/")
         if "/" in self.base_url:
-            context = self.base_url.split("/")[-1]
-            path_split.remove(context)
+            base_url_context = self.base_url.split("/")[-1]
+            path_split.remove(base_url_context)
+            logger.debug("Found context path: {ctx}, removing. Resulting path split: {path_split}".format(ctx=base_url_context, path_split=path_split))
         backend = path_split[0]
 
         if backend in self.backends:

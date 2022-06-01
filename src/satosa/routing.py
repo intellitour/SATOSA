@@ -163,9 +163,10 @@ class ModuleRouter(object):
         logline = lu.LOG_FMT.format(id=lu.get_session_id(context.state), message=msg)
         logger.debug(logline)
         path_split = context.path.split("/")
-        backend = path_split[0]
         if "/" in self.base_url:
-            backend = backend.replace(self.base_url.split("/")[-1], "")
+            context = self.base_url.split("/")[-1]
+            path_split.remove(context)
+        backend = path_split[0]
 
         if backend in self.backends:
             context.target_backend = backend

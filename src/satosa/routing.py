@@ -163,6 +163,7 @@ class ModuleRouter(object):
         logline = lu.LOG_FMT.format(id=lu.get_session_id(context.state), message=msg)
         logger.debug(logline)
         path_split = context.path.split("/")
+        logger.debug(f"Found path_splits: {path_split}".format(path_split=path_split))
         if "/" in self.base_url:
             base_url_context = self.base_url.split("/")[-1]
             path_split.remove(base_url_context)
